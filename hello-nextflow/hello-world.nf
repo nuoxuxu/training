@@ -5,17 +5,25 @@
  */
 process sayHello {
 
+    publishDir 'results', mode: 'copy'
+    
+    input:
+        val greeting
+
     output:
-        stdout
+        path 'output.txt'
 
     script:
     """
-    echo 'Hello World!'
+    echo '$greeting' > output.txt
     """
 }
 
 workflow {
 
+    // create a channel for inputs
+    greeting_ch = Channel.of(params.greeting)
+
     // emit a greeting
-    sayHello()
+    sayHello(greeting_ch)
 }
